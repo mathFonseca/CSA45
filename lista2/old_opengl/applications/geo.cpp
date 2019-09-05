@@ -107,3 +107,59 @@ bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
 
     return (area == 0) ? true : false;
 }
+
+bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+{
+    if(collinear(ponto_1, ponto_2, ponto_3) || collinear(ponto_1, ponto_2, ponto_4) || collinear(ponto_3, ponto_4, ponto_2) )
+    {
+        return false;
+    }
+    return ( ( (left(ponto_1, ponto_2, ponto_3)) ^ (left(ponto_1, ponto_2, ponto_4)) ) 
+        &&   ( (left(ponto_3, ponto_4, ponto_1)) ^ (left(ponto_3, ponto_4, ponto_2)) ) );
+}
+
+bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+{
+    if(!collinear(ponto_1, ponto_2, ponto_3))
+        return false;
+    if(ponto_1.x != ponto_2.x)
+    {
+        return ( ( (ponto_1.x <= ponto_3.x) && (ponto_3.x <= ponto_2.x) ) || 
+                 ( (ponto_1.x >= ponto_2.x) && (ponto_3.x >= ponto_2.x) ) );
+    }
+    else
+    {
+        return ( ( (ponto_1.y <= ponto_3.y) && (ponto_3.y <= ponto_2.y) ) || 
+                 ( (ponto_1.y >= ponto_3.y) && (ponto_3.y >= ponto_2.y) ) );
+    }
+                
+}
+
+bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+{
+    if(intersecPropria(ponto_1, ponto_2, ponto_3, ponto_4))
+        return true;
+    else if(between(ponto_1, ponto_2, ponto_3) || between(ponto_1, ponto_2, ponto_4) ||
+            between(ponto_3, ponto_4, ponto_1) || between(ponto_3, ponto_4, ponto_2))
+        return true;
+    else
+        return false;
+    
+}
+
+bool intersecPolygon(point_2d A, point_2d B, polygon_2d *polygon )
+{
+    // realizar inteserc com cada reta do poligono?
+    int i;
+    bool resposta = true;
+    for(i = 0; i < polygon->lenght && resposta == true ; i++)
+    {
+        if( i != (polygon->lenght - 1))
+            resposta = intersec(polygon->vector[i], polygon->vector[i+1], A, B);
+        else
+            resposta = intersec(polygon->vector[i], polygon->vector[0], A, B);
+    }
+
+    return resposta;
+}
+

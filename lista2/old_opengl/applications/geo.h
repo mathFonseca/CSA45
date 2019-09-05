@@ -1,10 +1,19 @@
 
+#define MAXPOINTS 1000
+
 typedef struct point_2d
 {
     double x;
     double y;
 
 } point2d;
+
+typedef struct polygon_2d
+{
+    point_2d vector [MAXPOINTS];
+    int lenght;
+
+} polygon2d;
 
 
 /* Adicionais */
@@ -30,3 +39,9 @@ bool leftOn(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
 
 // 1 somente se em cima da reta. 0 caso contrário.
 bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
+
+bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
+bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
+bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
+
+bool intersecPolygon(point_2d A, point_2d B, polygon_2d *polygon );
