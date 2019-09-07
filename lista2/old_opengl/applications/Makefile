@@ -9,7 +9,7 @@ PFLAGS = -Wall -W -Wpointer-arith -Wcast-qual \
          -Wcast-align -Wmissing-declarations \
          -Winline -O3 -g
 
-GLLIBS = -lglut -lGL -lGLU
+GLLIBS = -lglut -lGL -lGLU -lm
 
 $(LIB)/libcg.a:
 	cd ..; make; cd applications
@@ -29,6 +29,11 @@ appPoints: $(LIB)/libcg.a appPoints.cpp
 appImage: $(LIB)/libcg.a appImage.cpp
 	$(CC) $(PFLAGS) appImage.cpp -o $(BIN)/appImage -I$(INC) -L$(LIB) -lcg 
 
+exercicio2:$(LIB)/libcg.a exercicio2.cpp
+	$(CC) $(PFLAGS) exercicio2.cpp geo.cpp -o $(BIN)/exercicio2 -I$(INC) -L$(LIB) -lcg $(GLLIBS)
+
+exercicio3:$(LIB)/libcg.a exercicio3.cpp
+	$(CC) $(PFLAGS) exercicio3.cpp geo.cpp -o $(BIN)/exercicio3 -I$(INC) -L$(LIB) -lcg $(GLLIBS)
 
 .PHONY: clean
 

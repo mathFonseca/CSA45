@@ -13,15 +13,7 @@ void Keyboard(unsigned char key, int x, int y);
 void Mouse(int button, int state, int x, int y);
 void DrawPoints(void);
 void DrawLines();
-
-
-/* Types. */
-typedef struct point_2d
-{
-    double x;
-    double y;
-
-} point2d;
+bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
 
 /* Defines. */
 #define MAXNPTS 1000
@@ -29,9 +21,10 @@ typedef struct point_2d
 /* Globals */
 int winwidth, winheight;
 int npts = 0;
-bool func = false;
-point2d reta1[MAXNPTS];
-point2d reta2[MAXNPTS];
+int n = 0;
+int drawing_polygon = 1;
+point2d polygon[MAXNPTS];
+point2d pontos[4];
 
 void Init(){
     
@@ -72,50 +65,42 @@ void Mouse(int button, int state, int x, int y)
         case GLUT_LEFT_BUTTON:
             if (state == GLUT_DOWN)
             {
-                if (npts < MAXNPTS)
+                if(drawing_polygon > 0)
                 {
-                    if(npts == 0)
+                    if (npts < MAXNPTS)
                     {
-                        reta1[0].x = x;
-                        reta1[0].y = 512.0-y;
-                        npts++;
-                        func = false;
+
+                            polygon[npts].x = x;
+                            polygon[npts].y = 512.0-y;
+                            printf("Reading point (%f,%f).\n", 
+                            polygon[npts].x, polygon[npts].y);
+                            printf("npts: %d\n", npts);
+                            npts++;
                     }
-                    else if(npts == 1)
+                } 
+                else 
+                {
+                    if(npts < 4)
                     {
-                        reta1[1].x = x;
-                        reta1[1].y = 512.0-y;
-                        npts++;
-                    }
-                    else if(npts == 2)
-                    {
-                        reta2[0].x = x;
-                        reta2[0].y = 512.0-y;
+                        pontos[npts].x = x;
+                        pontos[npts].y = 512.0 - y;
+                        printf("Reading point (%f,%f).\n", 
+                            pontos[npts].x, pontos[npts].y);
                         npts++;
                     }
                     else
-                    {
-                        reta2[1].x = x;
-                        reta2[1].y = 512.0 - y;
-                        npts = 0; // Reseta npts.
-                        func = true;
-                    }
+                        npts = 0;
                     
-		           // points[npts].x = x;
-                    // points[npts].y = 512.0-y;
-		            printf("Reading point (%f,%f).\n", points[npts].x, points[npts].y);
-                    // npts++;
-                }
-
+                }   
                 glutPostRedisplay();
             }
             break;
         case GLUT_RIGHT_BUTTON:
             if (state == GLUT_DOWN)
             {
+                n = npts;
                 npts = 0;
-                glutPostRedisplay();
-                // reinicia as retas
+                drawing_polygon = drawing_polygon * (-1);
             }
             break;
         default:
@@ -126,31 +111,29 @@ void Mouse(int button, int state, int x, int y)
 void DrawPoints()
 {
     int i;
-    bool intersecPropria;
-/*
-bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
-bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
-bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
-*/
     glColor3f (0.0, 0.0, 0.0);
     glPointSize((GLdouble) 2);
     // Quando clicar em 4 botões, aplica as funções e desenha conforme resultado.
-    if(func == true)
+    if(drawing_polygon > 0 )
     {
-        if(intersecPropria(reta1[0], reta1[1], reta2[0], reta2[1]))
-            glColor3f(1.0, 0.0, 0.0);
-        else if(intersec(reta1[0], reta1[1], reta2[0], reta2[1]))
-            glColor3f(0.0, 0.0, 1.0);
+        glBegin(GL_LINE_STRIP);
+        for(i = 0; i < npts; i++)
+        {
+            glVertex2d(polygon[i].x, polygon[i].y);
+        }
+        glEnd();
     }
-    glBegin(GL_LINES);
-    // Desenha reta 1
-        glVertex2d(reta1[0].x, reta1[0].y);    
-        glVertex2d(reta1[i].x, reta1[i].y);
-    // Desenha reta 2
-        glVertex2d(reta2[0].x, reta2[0].y);    
-        glVertex2d(reta2[i].x, reta2[i].y);
+    else
+    {
+        glBegin(GL_LINES);
+            glVertex2d(polygon[n].x, polygon[n].y);
+            glVertex2d(polygon[0].x, polygon[0].y);
+        glEnd();
+    }
+
     
-    glEnd();
+
+
 }
 
 void Display(void){

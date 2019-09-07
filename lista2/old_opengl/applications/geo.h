@@ -10,9 +10,16 @@ typedef struct point_2d
 
 typedef struct polygon_2d
 {
-    point_2d vector [MAXPOINTS];
-    int lenght;
-
+    /*
+    *   info = informações do vértice (x,y)
+    *   next = aponta para o próximo vértice
+    *   prev = aponta para o vértice anterior
+    *   type_of_angle = 0 para convexo(<= 180), 1 para concavo (>180)
+    */ 
+    point_2d info;
+    polygon_2d *next;
+    polygon_2d *prev;
+    int type_of_angle; 
 } polygon2d;
 
 
@@ -40,8 +47,10 @@ bool leftOn(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
 // 1 somente se em cima da reta. 0 caso contrário.
 bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
 
-bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
+bool intersectPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
 bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
-bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
+bool intersect(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
 
-bool intersecPolygon(point_2d A, point_2d B, polygon_2d *polygon );
+void classifica_vertice(polygon_2d polygon);
+
+double computa_angulo(point_2d A, point_2d B, point_2d C);

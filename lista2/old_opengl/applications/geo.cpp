@@ -1,6 +1,8 @@
 #include "geo.h"
 #include <math.h>
 
+#define PI 3.1415
+
 /* 
 * Ao acessar uma estrutura de dados por ponteiro, usamos -> ao invés de ponto.
 * Exemplo:
@@ -108,7 +110,7 @@ bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
     return (area == 0) ? true : false;
 }
 
-bool intersecPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+bool intersectPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
 {
     if(collinear(ponto_1, ponto_2, ponto_3) || collinear(ponto_1, ponto_2, ponto_4) || collinear(ponto_3, ponto_4, ponto_2) )
     {
@@ -135,7 +137,7 @@ bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
                 
 }
 
-bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+bool intersect(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
 {
     if(intersecPropria(ponto_1, ponto_2, ponto_3, ponto_4))
         return true;
@@ -146,8 +148,8 @@ bool intersec(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d pon
         return false;
     
 }
-
-bool intersecPolygon(point_2d A, point_2d B, polygon_2d *polygon )
+/*
+bool intersectPolygon(point_2d A, point_2d B, polygon_2d *polygon )
 {
     // realizar inteserc com cada reta do poligono?
     int i;
@@ -161,5 +163,73 @@ bool intersecPolygon(point_2d A, point_2d B, polygon_2d *polygon )
     }
 
     return resposta;
+}*/
+
+
+void classifica_vertice(polygon_2d polygon)
+{
+    // Dado 3 pontos, aplica LeftOn
+    polygon_2d polygon_aux = polygon->next;
+    while(polygon_aux != polygon)
+    {
+        // A é o centro.
+        point_2d A = polygon_aux.info;
+        point_2d B = polygon_aux.prev->info;
+        point_2d C = polygon_aux.next->info;
+
+        // Classifica o vértice
+        if(leftOn(A, B, C))
+        {
+            polygon_aux.type_of_angle = 0;
+        }
+        else
+        {
+            polygon_aux.type_of_angle = 1;
+        }
+        
+        //Pega o próximo vértice.
+        polygon_aux = polygon_aux->next;
+    }
 }
 
+// Retorna angulo em graus de A.
+float computa_angulo(point_2d A, point_2d B, point_2d C)
+{
+    // Vetores: AB e AC
+    point_2d u, v;
+    u.x = B.x - A.x;
+    u.y = B.y = A.y;
+
+    v.x = C.x - A.x;
+    
+    v.y = C.y - A.y;
+
+    double modulo_AB = produto_interno(u, u);
+    double modulo_AC = produto_interno(v, v);
+
+    double aux = produto_interno(u,v);
+
+    return angle = acos(aux / (modulo_AB * modulo_AC));
+}
+
+// Retorna true se o poligono foi passado em anti horario. 0 se horario
+double winding_number(polygon_2d polygon)
+{
+    double k;
+    polygon_2d polygon_aux = polygon->next;
+    while(polygon_aux != polygon)
+    {
+        // A é o centro.
+        point_2d A = polygon_aux.info;
+        point_2d B = polygon_aux.prev->info;
+        point_2d C = polygon_aux.next->info;
+
+        // Computa o angulo de A.
+        k += computa_angulo(A, B, C);
+        
+        //Pega o próximo vértice.
+        polygon_aux = polygon_aux->next;        
+    }
+    k = k/(2*PI);
+    return (k>0) ? true : false;
+}
