@@ -1,6 +1,8 @@
 
 #define MAXPOINTS 1000
 
+enum point_category{start, split, end, merge, regular};
+
 typedef struct point_2d
 {
     double x;
@@ -20,6 +22,7 @@ typedef struct polygon_2d
     polygon_2d *next;
     polygon_2d *prev;
     int type_of_angle; 
+    enum point_category pointType;
 } polygon2d;
 
 
@@ -72,3 +75,9 @@ void classifica_vertice(polygon_2d polygon);
 
 // Calcula o angulo entre os pontos ABC, sendo B o centro.
 double computa_angulo(point_2d A, point_2d B, point_2d C);
+
+// Classifica os pontos do polígono
+void classifyPoints(polygon_2d polygon);
+
+// Retorna 1 se A está acima de B. 0 caso contrário
+bool checkUpwardPoint(point_2d A, point_2d B);

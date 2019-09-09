@@ -10,6 +10,7 @@
 * Acesso por ponteiro (struct): ponteiro->valor
 */
 
+// cria o ponto x,y
 point_2d point(double x, double y)
 {
     point_2d ponto;
@@ -18,14 +19,16 @@ point_2d point(double x, double y)
     return ponto;
 }
 
+// cria o vetor AB (B - A)
 point_2d vector(point_2d A, point_2d B)
 {
     point_2d vetor;
-    vetor.x = A.x - B.x;
-    vetor.y = A.y - B.y;
+    vetor.x = B.x - A.x;
+    vetor.y = B.y - A.y;
     return vetor;
 }
 
+// Soma os vetores coordenada por coordenada
 point_2d soma_vetores(point_2d vetor_1, point_2d vetor_2)
 {
     /*
@@ -37,6 +40,7 @@ point_2d soma_vetores(point_2d vetor_1, point_2d vetor_2)
     return resp;
 }
 
+// Calcula o produto interno dos vetores.
 double produto_interno(point_2d vetor_1, point_2d vetor_2)
 {
     /*
@@ -48,6 +52,7 @@ double produto_interno(point_2d vetor_1, point_2d vetor_2)
     return resp;
 }
 
+// Calcula o produto vetorial dos vetores. Vetor resposta com coordenada em z.
 point_2d produto_vetorial(point_2d vetor_1, point_2d vetor_2)
 {
     /*
@@ -147,6 +152,7 @@ bool intersect(point_2d A, point_2d B, point_2d C, point_2d D)
         return false;
     
 }
+
 /*
 bool intersectPolygon(point_2d A, point_2d B, polygon_2d *polygon )
 {
@@ -163,7 +169,6 @@ bool intersectPolygon(point_2d A, point_2d B, polygon_2d *polygon )
 
     return resposta;
 }*/
-
 
 void classifica_vertice(polygon_2d polygon)
 {
@@ -231,4 +236,63 @@ double winding_number(polygon_2d polygon)
     }
     k = k/(2*PI);
     return (k>0) ? true : false;
+}
+
+// Retorna true se A está acima de B. False caso contrário
+bool checkUpwardPoint(point_2d A, point_2d B)
+{
+    if(A.x > B.x)
+    {
+        if(A.y <= B.y)
+        {
+            return true;
+        }
+
+         return false;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Classifica os pontos do polígono
+void classifyPoints(polygon_2d polygon)
+{
+    polygon_2d polygon_aux = polygon->next;
+    while(polygon_aux != polygon)
+    {
+        // A é o centro. (pi). B é o pi-1 e C é o pi+1
+        point_2d A = polygon_aux.info;
+        point_2d B = polygon_aux.prev->info;
+        point_2d C = polygon_aux.next->info;
+
+        // Verifica se é start
+        if( !checkUpwardPoint(B, A) && !checkUpwardPoint(C, A) && (computa_angulo(A, B, C) < PI ))
+        {
+            polygon_aux.pointType = start;
+        }
+        // Verifica se é split
+        else if(!checkUpwardPoint(B, A) && !checkUpwardPoint(C, A) && (computa_angulo(A, B, C) > PI))  
+        {
+            polygon_aux.pointType = split;
+        }
+        // Verifica se é end
+        else if(checkUpwardPoint(B, A) && checkUpwardPoint(C, A) && (computa_angulo(A, B, C) < PI)) 
+        {
+            polygon_aux.pointType = end;
+        }
+        // Verifica se é merge
+        else if(checkUpwardPoint(B, A) && checkUpwardPoint(C, A) && (computa_angulo(A, B, C) > PI))   
+        {
+            polygon_aux.pointType = merge;
+        }
+        else    // É regular
+        {
+            polygon_aux.pointType = regular;   
+        }        
+
+        // Move para o próximo vértice
+        polygon_aux = polygon_aux->next;
+    }
 }
