@@ -23,34 +23,52 @@ typedef struct polygon_2d
 } polygon2d;
 
 
-/* Adicionais */
+/* Funções */
+
+// write comment
 double angulo_interno(point_2d * array_1, point_2d * array_2);
-point_2d vector(point_2d ponto_1, point_2d ponto_2);
+
+// cria o vetor AB
+point_2d vector(point_2d A, point_2d B);
+
+// cria o ponto x,y
 point_2d point(double x, double y);
 
-
-/* Lista 1 */
+// Soma os vetores coordenada por coordenada
 point_2d soma_vetores(point_2d vetor_1, point_2d vetor_2);
+
+// Calcula o produto interno dos vetores.
 double produto_interno(point_2d vetor_1, point_2d vetor_2);
+
+// Calcula o produto vetorial dos vetores. Vetor resposta com coordenada em z.
 point_2d produto_vetorial(point_2d vetor_1, point_2d vetor_2);
-double area_triangulo_unsigned(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
-double area_triangulo_signed(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
 
-/* Lista 2 */
+// Calcula a área do triangulo formado pelos pontos A, B e C
+double area_triangulo_unsigned(point_2d A, point_2d B, point_2d C);
 
-// 1 se a esquerda. 0 caso contrário
-bool left(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
+// Calcula a área do triangulo com sinal, formado pelos pontos A, B e C
+double area_triangulo_signed(point_2d A, point_2d B, point_2d C);
 
-// 1 se a esquerda ou em cima da reta. 0 caso contrário
-bool leftOn(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
+// Retorna true caso C esteja a esquerda da reta AB. False caso contrário
+bool left(point_2d A, point_2d B, point_2d C);
 
-// 1 somente se em cima da reta. 0 caso contrário.
-bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
+// Retorna true caso C esteja a esquerda ou alinhado a reta AB. False caso contrário
+bool leftOn(point_2d A, point_2d B, point_2d C);
 
-bool intersectPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
-bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3);
-bool intersect(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4);
+// Retorna true caso C esteja dentro da reta AB. False caso contrário
+bool collinear(point_2d A, point_2d B, point_2d C);
 
+// Retorna true quando não tem intersecção própria. False caso contrário
+bool intersectPropria(point_2d A, point_2d B, point_2d C, point_2d D);
+
+// Retorna true quando C está dentro do segmento AB
+bool between(point_2d A, point_2d B, point_2d C);
+
+// Retorna true quando a reta AB intersecta a reta CD
+bool intersect(point_2d A, point_2d B, point_2d C, point_2d D);
+
+// Classifica os vertices do poligono. 1 se concavo, 0 se convexo
 void classifica_vertice(polygon_2d polygon);
 
+// Calcula o angulo entre os pontos ABC, sendo B o centro.
 double computa_angulo(point_2d A, point_2d B, point_2d C);

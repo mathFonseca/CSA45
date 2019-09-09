@@ -18,11 +18,11 @@ point_2d point(double x, double y)
     return ponto;
 }
 
-point_2d vector(point_2d ponto_1, point_2d ponto_2)
+point_2d vector(point_2d A, point_2d B)
 {
     point_2d vetor;
-    vetor.x = ponto_1.x - ponto_2.x;
-    vetor.y = ponto_1.y - ponto_2.y;
+    vetor.x = A.x - B.x;
+    vetor.y = A.y - B.y;
     return vetor;
 }
 
@@ -61,88 +61,87 @@ point_2d produto_vetorial(point_2d vetor_1, point_2d vetor_2)
     return resp;
 }
 
-double area_triangulo_unsigned(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+double area_triangulo_unsigned(point_2d A, point_2d B, point_2d C)
 {
-    double area = ( ( (ponto_2.x - ponto_1.x) * (ponto_3.y - ponto_1.y) )
-             - ( (ponto_3.x - ponto_1.x) * (ponto_2.y - ponto_1.y)) )/2;
+    double area = ( ( (B.x - A.x) * (C.y - A.y) )
+             - ( (C.x - A.x) * (B.y - A.y)) )/2;
     
     return area = (area>0) ? area : area*(-1);
 }
 
-double area_triangulo_signed(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+double area_triangulo_signed(point_2d A, point_2d B, point_2d C)
 {
-    double area = ( ( (ponto_2.x - ponto_1.x) * (ponto_3.y - ponto_1.y) )
-             - ( (ponto_3.x - ponto_1.x) * (ponto_2.y - ponto_1.y)) )/2;
+    double area = ( ( (B.x - A.x) * (C.y - A.y) )
+             - ( (C.x - A.x) * (B.y - A.y)) )/2;
     
     return area;
 }
 
 // 1 se a esquerda. 0 caso contrário
-bool left(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+bool left(point_2d A, point_2d B, point_2d C)
 {
     double area;
-
-    area = ( ( (ponto_2.x - ponto_1.x) * (ponto_3.y - ponto_1.y) )
-             - ( (ponto_3.x - ponto_1.x) * (ponto_2.y - ponto_1.y)) )/2;
+    area = ( ( (B.x - A.x) * (C.y - A.y) )
+             - ( (C.x - A.x) * (B.y - A.y)) )/2;
 
     return (area > 0) ? true : false;
 }
 
 // 1 se a esquerda ou em cima da reta. 0 caso contrário
-bool leftOn(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+bool leftOn(point_2d A, point_2d B, point_2d C)
 {
     double area;
 
-    area = ( ( (ponto_2.x - ponto_1.x) * (ponto_3.y - ponto_1.y) )
-             - ( (ponto_3.x - ponto_1.x) * (ponto_2.y - ponto_1.y)) )/2;
+    area = ( ( (B.x - A.x) * (C.y - A.y) )
+             - ( (C.x - A.x) * (B.y - A.y)) )/2;
 
     return (area>=0) ? true : false;
 }
 
 // 1 somente se em cima da reta. 0 caso contrário.
-bool collinear(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+bool collinear(point_2d A, point_2d B, point_2d C)
 {
     double area;
 
-    area = ( ( (ponto_2.x - ponto_1.x) * (ponto_3.y - ponto_1.y) )
-             - ( (ponto_3.x - ponto_1.x) * (ponto_2.y - ponto_1.y)) )/2;
+    area = ( ( (B.x - A.x) * (C.y - A.y) )
+             - ( (C.x - A.x) * (B.y - A.y)) )/2;
 
     return (area == 0) ? true : false;
 }
 
-bool intersectPropria(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+bool intersectPropria(point_2d A, point_2d B, point_2d C, point_2d D)
 {
-    if(collinear(ponto_1, ponto_2, ponto_3) || collinear(ponto_1, ponto_2, ponto_4) || collinear(ponto_3, ponto_4, ponto_2) )
+    if(collinear(A, B, C) || collinear(A, B, D) || collinear(C, D, B) )
     {
         return false;
     }
-    return ( ( (left(ponto_1, ponto_2, ponto_3)) ^ (left(ponto_1, ponto_2, ponto_4)) ) 
-        &&   ( (left(ponto_3, ponto_4, ponto_1)) ^ (left(ponto_3, ponto_4, ponto_2)) ) );
+    return ( ( (left(A, B, C)) ^ (left(A, B, D)) ) 
+        &&   ( (left(C, D, A)) ^ (left(C, D, B)) ) );
 }
 
-bool between(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3)
+bool between(point_2d A, point_2d B, point_2d C)
 {
-    if(!collinear(ponto_1, ponto_2, ponto_3))
+    if(!collinear(A, B, C))
         return false;
-    if(ponto_1.x != ponto_2.x)
+    if(A.x != B.x)
     {
-        return ( ( (ponto_1.x <= ponto_3.x) && (ponto_3.x <= ponto_2.x) ) || 
-                 ( (ponto_1.x >= ponto_2.x) && (ponto_3.x >= ponto_2.x) ) );
+        return ( ( (A.x <= C.x) && (C.x <= B.x) ) || 
+                 ( (A.x >= B.x) && (C.x >= B.x) ) );
     }
     else
     {
-        return ( ( (ponto_1.y <= ponto_3.y) && (ponto_3.y <= ponto_2.y) ) || 
-                 ( (ponto_1.y >= ponto_3.y) && (ponto_3.y >= ponto_2.y) ) );
+        return ( ( (A.y <= C.y) && (C.y <= B.y) ) || 
+                 ( (A.y >= C.y) && (C.y >= B.y) ) );
     }
                 
 }
 
-bool intersect(point_2d ponto_1, point_2d ponto_2, point_2d ponto_3, point_2d ponto_4)
+bool intersect(point_2d A, point_2d B, point_2d C, point_2d D)
 {
-    if(intersecPropria(ponto_1, ponto_2, ponto_3, ponto_4))
+    if(intersecPropria(A, B, C, D))
         return true;
-    else if(between(ponto_1, ponto_2, ponto_3) || between(ponto_1, ponto_2, ponto_4) ||
-            between(ponto_3, ponto_4, ponto_1) || between(ponto_3, ponto_4, ponto_2))
+    else if(between(A, B, C) || between(A, B, D) ||
+            between(C, D, A) || between(C, D, B))
         return true;
     else
         return false;
@@ -197,11 +196,11 @@ float computa_angulo(point_2d A, point_2d B, point_2d C)
 {
     // Vetores: AB e AC
     point_2d u, v;
+    u = vector()
     u.x = B.x - A.x;
     u.y = B.y = A.y;
 
     v.x = C.x - A.x;
-    
     v.y = C.y - A.y;
 
     double modulo_AB = produto_interno(u, u);
