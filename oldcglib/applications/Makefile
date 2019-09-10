@@ -9,7 +9,7 @@ PFLAGS = -Wall -W -Wpointer-arith -Wcast-qual \
          -Wcast-align -Wmissing-declarations \
          -Winline -O3 -g
 
-GLLIBS = -lglut -lGL -lGLU
+GLLIBS = -lglut -lGL -lGLU -lm
 
 $(LIB)/libcg.a:
 	cd ..; make; cd applications
