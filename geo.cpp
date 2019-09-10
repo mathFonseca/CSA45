@@ -1,15 +1,53 @@
+/* Autores das bibliotecas:
+* Matheus Fonseca Alexandre de Oliveira
+* <matheus.2016@alunos.utfpr.edu.br>
+*/
+
+/* Libraries */
 #include "geo.h"
 #include <math.h>
 
+/* Defines */
 #define PI 3.1415
 
-/* 
-* Ao acessar uma estrutura de dados por ponteiro, usamos -> ao invés de ponto.
+/* Additional <personal> comments: 
+* Ao acessar uma estrutura de dados por ponteiro, 
+* usamos -> ao invés de ponto.
 * Exemplo:
 * Acesso por ponteiro normal: ponteiro.valor
 * Acesso por ponteiro (struct): ponteiro->valor
 */
 
+/* Funções */
+
+point_2d c_Point(double x, double y)
+{
+    point_2d ponto;
+    ponto.x = x;
+    ponto.y = y;
+    return ponto;
+}
+
+point_2d c_Vector(point_2d A, point_2d B)
+{
+    // Relembrando: um vetor u AB é formado por B-A
+    point_2d vector;
+    vector.x = B.x - A.x;
+    vector.y = B.y - A.y;
+    return vector;
+}
+
+// Insere ponto A no polígono.
+void insertPolygon(point_2d Point, polygon_2d Polygon)
+{
+    // Insere no fim da lista
+    polygon_2d aux;
+    aux = Polygon;
+    
+}
+
+
+/* Unverified Functions */
 // cria o ponto x,y
 point_2d point(double x, double y)
 {

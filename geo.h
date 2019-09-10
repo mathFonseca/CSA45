@@ -1,6 +1,7 @@
-
-#define MAXPOINTS 1000
-
+/* Autores das bibliotecas:
+* Matheus Fonseca Alexandre de Oliveira
+* <matheus.2016@alunos.utfpr.edu.br>
+*/
 enum point_category{start, split, end, merge, regular};
 
 typedef struct point_2d
@@ -17,6 +18,8 @@ typedef struct polygon_2d
     *   next = aponta para o próximo vértice
     *   prev = aponta para o vértice anterior
     *   type_of_angle = 0 para convexo(<= 180), 1 para concavo (>180)
+    *   pointType = classificação do angulo perante as 4 configurações
+    *   possíveis (ref: DE BERG).
     */ 
     point_2d info;
     polygon_2d *next;
@@ -27,6 +30,26 @@ typedef struct polygon_2d
 
 
 /* Funções */
+
+/* Verified Functions 10/09 */
+
+/* Functions associated with the structures */
+
+/* Point Funtions */
+
+// Cria um ponto com coordenadas x e y
+point_2d c_Point(double x, double y);
+
+/* Cria um vetor u
+* Tal que B - A
+*/
+point_2d c_Vector(point_2d A, point_2d B);
+
+// Insere ponto A no polígono.
+void insertPolygon(point_2d Point, polygon_2d Polygon);
+
+
+/* Unverified Functions */
 
 // write comment
 double angulo_interno(point_2d * array_1, point_2d * array_2);
@@ -43,19 +66,25 @@ point_2d soma_vetores(point_2d vetor_1, point_2d vetor_2);
 // Calcula o produto interno dos vetores.
 double produto_interno(point_2d vetor_1, point_2d vetor_2);
 
-// Calcula o produto vetorial dos vetores. Vetor resposta com coordenada em z.
+/* Calcula o produto vetorial dos vetores. 
+* Vetor resposta com coordenada em z.
+*/
 point_2d produto_vetorial(point_2d vetor_1, point_2d vetor_2);
 
 // Calcula a área do triangulo formado pelos pontos A, B e C
-double area_triangulo_unsigned(point_2d A, point_2d B, point_2d C);
+double a_triangulo_unsigned(point_2d A, point_2d B, point_2d C);
 
 // Calcula a área do triangulo com sinal, formado pelos pontos A, B e C
-double area_triangulo_signed(point_2d A, point_2d B, point_2d C);
+double a_triangulo_signed(point_2d A, point_2d B, point_2d C);
 
-// Retorna true caso C esteja a esquerda da reta AB. False caso contrário
+/* Retorna true caso C esteja a esquerda da reta AB. 
+* False caso contrário
+*/
 bool left(point_2d A, point_2d B, point_2d C);
 
-// Retorna true caso C esteja a esquerda ou alinhado a reta AB. False caso contrário
+/* Retorna true caso C esteja a esquerda ou alinhado a reta AB. 
+* False caso contrário
+*/
 bool leftOn(point_2d A, point_2d B, point_2d C);
 
 // Retorna true caso C esteja dentro da reta AB. False caso contrário
