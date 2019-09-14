@@ -100,7 +100,7 @@ double s_areaTriangle(point_2d A, point_2d B, point_2d C)
 bool left(point_2d A, point_2d B, point_2d C)
 {
     double area;
-    area = ((C.x - A.x) * (B.y - A.y)) - ((B.x - A.x) * (C.y - A.y) );
+    area = ((B.x - A.x) * (C.y - A.y)) - ((C.x - A.x) * (B.y - A.y) );
     area = area/2;
     return (area > 0) ? true : false;
 }
@@ -109,7 +109,7 @@ bool left(point_2d A, point_2d B, point_2d C)
 bool leftOn(point_2d A, point_2d B, point_2d C)
 {
     double area;
-    area = ((C.x - A.x) * (B.y - A.y)) - ((B.x - A.x) * (C.y - A.y) );
+    area = ((B.x - A.x) * (C.y - A.y)) - ((C.x - A.x) * (B.y - A.y) );
     area = area/2;
     return (area >= 0) ? true : false;    
 }
@@ -118,7 +118,7 @@ bool leftOn(point_2d A, point_2d B, point_2d C)
 bool collinear(point_2d A, point_2d B, point_2d C)
 {
     double area;
-    area = ((C.x - A.x) * (B.y - A.y)) - ((B.x - A.x) * (C.y - A.y) );
+    area = ((B.x - A.x) * (C.y - A.y)) - ((C.x - A.x) * (B.y - A.y) );
     area = area/2;
     return (area == 0) ? true : false;        
 }
@@ -147,6 +147,100 @@ bool between(point_2d A, point_2d B, point_2d C)
         return false;
     }    
 }
+
+void classifyVertex(polygon_2d Polygon);
+double calculateAngle(point_2d A, point_2d B, point_2d C)
+{
+        // Vetores: AB e AC
+    point_2d u, v;
+    u.x = B.x - A.x;
+    u.y = B.y = A.y;
+
+    v.x = C.x - A.x;
+    v.y = C.y - A.y;
+
+    double modulo_AB = prodInterno(u, u);
+    double modulo_AC = prodInterno(v, v);
+
+    double aux = prodInterno(u,v);
+
+    return (double)acos(aux / (modulo_AB * modulo_AC));
+}
+void windingNumber(); // Precisa de revisão
+bool checkUpward(point_2d A, point_2d B)
+{
+    if(A.x > B.x)
+    {
+        if(A.y <= B.y)
+        {
+            return true;
+        }
+
+         return false;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+/*  Classifica os vértices do polígono entre 5 categorias.
+*   Regular, Split, Merge, Start, End
+*/
+void classifyVertexMonotonePolygon(polygon_2d * polygon)
+{
+    // Pontos usados, onde o vértice Pi é A, Pi-1 é B, Pi+1 é C.
+    point_2d A;
+    point_2d B;
+    point_2d C;
+
+    polygon_2d * polygon_aux = polygon->prev;
+
+    while(polygon_aux != polygon)
+    {
+        A = polygon_aux->info;
+        B = polygon_aux->prev->info;
+        C = polygon_aux->next->info;
+
+        if(!checkUpward(B, A) && !checkUpward(C, A) &&
+             calculateAngle(A, B, C) < PI)
+        {
+            polygon->pointType = start;
+        }
+        else if(!checkUpward(B, A) && !checkUpward(C, A) &&
+             calculateAngle(A, B, C) > PI)
+        {
+            polygon->pointType = split;
+        }
+        else if(checkUpward(B, A) && checkUpward(C, A) &&
+             calculateAngle(A, B, C) < PI) 
+        {
+            polygon->pointType = end;
+        }
+        else if(checkUpward(B, A) && checkUpward(C, A) &&
+             calculateAngle(A, B, C) > PI)
+        {
+            polygon->pointType = merge;
+        }
+        else
+        {
+            polygon->pointType = regular;
+        }
+        
+        polygon_aux = polygon_aux->next;
+    }
+}
+
+/*
+Dizemos que um ponto p = (xp, yp) est´a abaixo de um ponto q = (xq, yq)
+se yp < yq ou se yp = yq e xp > xq. Dado um pol´ıgono simples P = {p1, p2, . . . , pn},
+escreva uma fun¸c˜ao que classifique um v´ertice pi em uma das seguintes categorias:
+1. start: pi−1 e pi+1 est˜ao abaixo de pi e o ˆangulo interno em pi ´e menor que π;
+2. split: pi−1 e pi+1 est˜ao abaixo de pi e o ˆangulo interno em pi ´e maior que π;
+3. end: pi−1 e pi+1 est˜ao acima de pi e o ˆangulo interno em pi ´e menor que π;
+4. merge: pi−1 e pi+1 est˜ao acima de pi e o ˆangulo interno em pi ´e maior que π;
+5. regular: caso n˜ao seja nenhum dos anteriores.
+Considerando que p1−1 = pn e pn+1 = p1.*/
 // ==================================================================
 /* Old Functions */
 /* cria o ponto x,y

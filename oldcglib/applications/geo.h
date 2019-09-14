@@ -21,9 +21,9 @@ typedef struct polygon_2d
     *   pointType = classificação do angulo perante as 4 configurações
     *   possíveis (ref: DE BERG).
     */ 
-    point_2d info;
-    polygon_2d *next;
-    polygon_2d *prev;
+    struct point_2d info;
+    struct polygon_2d *next;
+    struct polygon_2d *prev;
     int type_of_angle; 
     enum point_category pointType;
 } polygon2d;
@@ -76,6 +76,20 @@ bool collinear(point_2d A, point_2d B, point_2d C);
 
 // Retorna true se C está a em cima e entre de AB. False se contrário
 bool between(point_2d A, point_2d B, point_2d C);
+
+void intersecPropria();
+void intersec();
+void intersecPolygon();
+
+/*  Classifica os vértices do polígono entre 5 categorias.
+*   Regular, Split, Merge, Start, End
+*/
+void classifyVertex(polygon_2d Polygon);
+double calculateAngle(point_2d A, point_2d B, point_2d C);
+void windingNumber();
+bool checkUpward(point_2d A, point_2d B);
+void classifyVertexMonotonePolygon(polygon_2d * polygon);
+
 
 // ==================================================================
 /* OLD Functions */

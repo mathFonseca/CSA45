@@ -29,6 +29,9 @@ appPoints: $(LIB)/libcg.a appPoints.cpp
 appImage: $(LIB)/libcg.a appImage.cpp
 	$(CC) $(PFLAGS) appImage.cpp -o $(BIN)/appImage -I$(INC) -L$(LIB) -lcg 
 
+lista1: $(LIB)/libcg.a lista1.cpp
+	$(CC) $(PFLAGS) lista1.cpp geo.cpp -o $(BIN)/lista1 -I$(INC) -L$(LIB) -lcg $(GLLIBS)
+
 
 .PHONY: clean
 
