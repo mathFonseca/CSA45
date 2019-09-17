@@ -24,7 +24,7 @@ typedef struct Point
     double x;
     double y;
     /* Aresta que tem como origem este ponto */
-    struct Edge aresta;    
+    struct Edge *aresta;    
 } Point;
 
 typedef struct Face
@@ -42,6 +42,7 @@ void disconnect(Point *vertex_A, Point *vertex_B);
 void disconnectOrbit(Edge *edge_1, Edge *edge_2);
 
 /* TODO: Implement */
+void insertEdge(Edge *edge, Point *origin, Point *destiny);
 void printFaces(Face *face);
 void printEdges(Edge *edge);
 void printPoints(Edge *edge);

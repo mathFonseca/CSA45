@@ -1,21 +1,11 @@
+/* Autores das bibliotecas:
+* Matheus Fonseca Alexandre de Oliveira
+* <matheus.2016@alunos.utfpr.edu.br>
+*/
+
+
 #include "dcel.h"
 #include <stdlib.h> // malloc
-
-/*
-typedef struct Edge
-{
-    /* Ponto de origem da aresta
-    struct Point ponto_origem;
-    /* Ponteiro para a próxima aresta
-    struct Edge *next;
-    /* Ponteiro para a aresta anterior   
-    struct Edge *prev;
-    /* Ponteiro para a aresta gêmea  
-    struct Edge *twin;
-    /* Ponteiro para a face a sua esquerda
-    struct Face *left_face;
-} Edge;
-*/
 
 /* Cria dinamicamente uma aresta
 *  Aresta é isolada, sem pontos definidos
@@ -43,8 +33,30 @@ Edge* createEdge()
     new_edge->left_face = NULL;
     second_edge->left_face = NULL;
 
+    // Associa os pontos
+    new_edge->ponto_origem = NULL;
+    second_edge->ponto_origem = NULL;
+
     return new_edge;
 
+}
+
+void insertEdge(Edge *edge, Point *origin, Point *destiny)
+{
+    // Associa o ponto a origem
+    edge->ponto_origem = origin;
+
+    // Associa o ponto de destino
+    edge->twin->ponto_origem = destiny;
+
+    // Achar aresta e1 e e2
+
+    // Arruma os ponteiros associados a esse ponto
+    edge->prev = e1;
+    edge->next = e2;
+
+    edge->twin->prev = e2->twin;
+    edge->twin->next = e1->twin;
 }
 
 /* Essa função precisa ser repensada
@@ -60,14 +72,68 @@ void printFaces(Face *face)
     while(aresta_aux != face->edge);
 }
 
+
+
 /* TODO: Lista 4 */
 
-void connect(Point *vertex_A, Point *vertex_B);
-void connectOrbit(Edge *edge_1, Edge *edge_2);
-void disconnect(Point *vertex_A, Point *vertex_B);
-void disconnectOrbit(Edge *edge_1, Edge *edge_2);
+void connect(Point *vertex_A, Point *vertex_B)
+{
+    // Cria uma aresta que inicia em A e termina em B.
+    Edge *edge;
+    edge = createEdge();
+    edge->ponto_origem = vertex_A;
+    edge->twin->ponto_origem = vertex_B;
+
+    // Acha aresta e1 e e2
+
+    // Conecta as órbitas
+    connectOrbit(edge_1, edge);
+    connectOrbit(edge_2, edge->twin);
+}
+void connectOrbit(Edge *edge_1, Edge *edge_2)
+{
+    edge_2->prev = edge_1->prev;
+
+    /*
+    *
+    * 
+    * 
+    */
+
+    /*
+    edge_1->twin->prev = edge_2->prev;
+    edge_2->prev->next = edge_1->twin;
+    edge_2->prev = edge_1;
+    edge_1->next = edge_2;*/
+}
+void disconnect(Point *vertex_A, Point *vertex_B)
+{
+    // Encontra aresta com ponto inicial em A e final em B
+    Edge *edge = vertex_A->aresta;
+    bool foundEdge = false;
+    do
+    {
+        // Pega a próxima aresta da órbita de A.
+        if(edge->ponto_origem == vertex_A && edge->twin->ponto_origem == vertex_B)
+            foundEdge = true;
+    }
+    while(/* Enquanto tiver vértices na órbita*/ || foundEdge == true);
+
+    // Verifica estado da flag
+    if(foundEdge)
+    {
+        // Acha aresta e1 e e2
+        disconnectOrbit(edge_1, edge);
+        disconnectOrbit(edge_2, edge->twin);
+    }
+}
+void disconnectOrbit(Edge *edge_1, Edge *edge_2)
+{
+    // find out
+}
 
 /* TODO: Implement */
+
 void printEdges(Edge *edge);
 void printPoints(Edge *edge);
 void vertexOrbit(Point *vertex);
