@@ -109,6 +109,7 @@ void connectOrbit(Edge *edge_1, Edge *edge_2)
 void disconnect(Point *vertex_A, Point *vertex_B)
 {
     // Encontra aresta com ponto inicial em A e final em B
+    // Em outras palavras, busca todas as arestas da órbita de A.
     Edge *edge = vertex_A->aresta;
     bool foundEdge = false;
     do
@@ -123,9 +124,12 @@ void disconnect(Point *vertex_A, Point *vertex_B)
     if(foundEdge)
     {
         // Acha aresta e1 e e2
+
+        // Desconecta das órbitas
         disconnectOrbit(edge_1, edge);
         disconnectOrbit(edge_2, edge->twin);
     }
+    
 }
 void disconnectOrbit(Edge *edge_1, Edge *edge_2)
 {
