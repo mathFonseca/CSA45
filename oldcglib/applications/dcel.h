@@ -7,7 +7,7 @@
 typedef struct Edge
 {
     /* Ponto de origem da aresta */
-    struct Point ponto_origem;
+    struct Point *ponto_origem;
     /* Ponteiro para a próxima aresta */
     struct Edge *next;
     /* Ponteiro para a aresta anterior*/    
@@ -49,4 +49,8 @@ void printPoints(Edge *edge);
 void vertexOrbit(Point *vertex);
 void insertEdge(Point *vertex_A, Point *vertex_B);
 void insertVertex(Edge *edge);
+
+/* NEW VERSIONS OF OLD FUNCTIONS*/
+
+bool left(Point *A, Point *B, Point *C);
 

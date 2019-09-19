@@ -5,6 +5,7 @@
 
 
 #include "dcel.h"
+#include "geo.h"
 #include <stdlib.h> // malloc
 
 /* Cria dinamicamente uma aresta
@@ -79,61 +80,104 @@ void printFaces(Face *face)
 void connect(Point *vertex_A, Point *vertex_B)
 {
     // Cria uma aresta que inicia em A e termina em B.
-    Edge *edge;
+    Edge *edge, *edge_1, *edge_2;
     edge = createEdge();
     edge->ponto_origem = vertex_A;
     edge->twin->ponto_origem = vertex_B;
 
     // Acha aresta e1 e e2
+    // Aresta e1 (pertencente a B)
+    Edge *aux = vertex_B->aresta;
+    Edge *aux_next = aux->twin->next;
+    do
+    {
+        /* 
+        * Teste que eu pensei
+        * "edge aux" tem que estar a esquerda da aresta que vou inserir.
+        * "edge aux_net" tem que estar a direita da aresta que vou inserir.
+        */ 
+
+        /* Teste de left */
+        if(left(edge->ponto_origem,edge->twin->ponto_origem,aux->twin->ponto_origem))
+        {
+            /* Teste de Right*/
+            if(!left(edge->ponto_origem, edge->twin->ponto_origem,aux_next->twin->ponto_origem))
+            {
+                // Se deu certo, achamos nossa edge. (aux)
+                break;
+            }
+        }
+        // Move as arestas
+        aux = vertex_B->aresta->twin->next;
+        aux_next = aux->twin->next;
+    } while (aux != vertex_B->aresta);
+    
 
     // Conecta as órbitas
     connectOrbit(edge_1, edge);
     connectOrbit(edge_2, edge->twin);
 }
-void connectOrbit(Edge *edge_1, Edge *edge_2)
+void connectOrbit(Edge *edge_c, Edge *edge_e)
 {
-    edge_2->prev = edge_1->prev;
-
-    /*
-    *
-    * 
-    * 
+    /* Nova aresta: edge_e
+    * Aresta que vamos mudar: edge_c
+    * Previous da nova aresta é agora o previous da aresta c
+    * Assim, quando percorrermos a face dessa aresta, não passamos direto,
+    * e "viramos" na aresta nova inserida 
     */
-
-    /*
-    edge_1->twin->prev = edge_2->prev;
-    edge_2->prev->next = edge_1->twin;
-    edge_2->prev = edge_1;
-    edge_1->next = edge_2;*/
+    edge_e->prev = edge_c->prev;
+    /* Agora que e tem o previous certo, vamos fazer essa aresta apontar 
+    * para e (seu next) 
+    */ 
+    edge_c->prev->next = edge_e;
+    /* Agora que a aresta anterior de c tem seus ponteiros certos (ela aponta)
+    * para e, e tem seu previous para ela.
+    * Vamos arrumar c.
+    * Previous de c tem que ser a aresta nova (twin) (afinal, a nova ta no outro sentido)
+    */ 
+    edge_c->prev = edge_e->twin;
+    /* Por fim, arrumamos a next do twin de e. 
+    * Por ser uma aresta nova, atualmente ela aponta para seu irmão
+    * Agora, ela ponta corretamente para sua next, c.
+    */ 
+   edge_e->twin->next = edge_c;
 }
 void disconnect(Point *vertex_A, Point *vertex_B)
-{
-    // Encontra aresta com ponto inicial em A e final em B
-    // Em outras palavras, busca todas as arestas da órbita de A.
-    Edge *edge = vertex_A->aresta;
-    bool foundEdge = false;
-    do
-    {
-        // Pega a próxima aresta da órbita de A.
-        if(edge->ponto_origem == vertex_A && edge->twin->ponto_origem == vertex_B)
-            foundEdge = true;
-    }
-    while(/* Enquanto tiver vértices na órbita*/ || foundEdge == true);
+{   
+    /* 
+    * Busca aresta com origem em A, cuja sua irmã gêmea tem origem em B
+    * Se sua irmã não tem a origem em B, pega sua próxima da órbita 
+    */
+   Edge *v;
+   do
+   {
+       v = vertex_A->aresta;
+       if(v->twin->ponto_origem == vertex_B)
+       {
+           break;
+       } 
+        v = v->twin->next;    
+   } while ( v != vertex_A->aresta);
+   
+    /*
+    * Uma vez com aresta encontrada, vamos encontrar e1 e e2.
+    * Aqui, elas já estão óbvias.
+    * e1 é a previous (da órbita).
+    * e2 é a next (da órbita).
+    */
 
-    // Verifica estado da flag
-    if(foundEdge)
-    {
-        // Acha aresta e1 e e2
-
-        // Desconecta das órbitas
-        disconnectOrbit(edge_1, edge);
-        disconnectOrbit(edge_2, edge->twin);
-    }
-    
+    Edge *e1, *e2; 
+    e1 = v->next;
+    e2 = v->twin->next;
+    disconnectOrbit(e1, v);
+    disconnectOrbit(e2,v->next);    
 }
 void disconnectOrbit(Edge *edge_1, Edge *edge_2)
 {
-    // find out
+    edge_1->prev = edge_2->twin->prev;
+    edge_1->twin->next = edge_2;
+    edge_2->twin->prev->next = edge_1;
+    edge_2->prev = edge_1->twin;
 }
 
 /* TODO: Implement */
@@ -143,3 +187,11 @@ void printPoints(Edge *edge);
 void vertexOrbit(Point *vertex);
 void insertEdge(Point *vertex_A, Point *vertex_B);
 void insertVertex(Edge *edge);
+
+bool left(Point *A, Point *B, Point *C)
+{
+    double area;
+    area = ((B->x - A->x) * (C->y - A->y)) - ((C->x - A->x) * (B->y - A->y) );
+    area = area/2;
+    return (area > 0) ? true : false;
+}
