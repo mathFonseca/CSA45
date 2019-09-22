@@ -34,12 +34,13 @@ typedef struct Face
 } Face;
 
 Edge* createEdge();
-/* TODO: Lista 4 */
 
 void connect(Point *vertex_A, Point *vertex_B);
 void connectOrbit(Edge *edge_1, Edge *edge_2);
 void disconnect(Point *vertex_A, Point *vertex_B);
 void disconnectOrbit(Edge *edge_1, Edge *edge_2);
+bool left(Point *A, Point *B, Point *C);
+
 
 /* TODO: Implement */
 void insertEdge(Edge *edge, Point *origin, Point *destiny);
@@ -49,8 +50,3 @@ void printPoints(Edge *edge);
 void vertexOrbit(Point *vertex);
 void insertEdge(Point *vertex_A, Point *vertex_B);
 void insertVertex(Edge *edge);
-
-/* NEW VERSIONS OF OLD FUNCTIONS*/
-
-bool left(Point *A, Point *B, Point *C);
-
