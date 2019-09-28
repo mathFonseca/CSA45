@@ -1,4 +1,4 @@
-/* Autores das bibliotecas:
+/* Autor da biblioteca:
 * Matheus Fonseca Alexandre de Oliveira
 * <matheus.2016@alunos.utfpr.edu.br>
 */
@@ -18,35 +18,32 @@ typedef struct Edge
     struct Face *left_face;
 } Edge;
 
+/* Estrutura do ponto no espaço 2D*/
 typedef struct Point
 {
-    /* Estrutura do ponto no espaço*/
+    /* Valor x no espaço */
     double x;
+    /* Valor y no espaço */
     double y;
     /* Aresta que tem como origem este ponto */
     struct Edge *aresta;    
 } Point;
 
+/* Estrutura da face no espaço 2D */
 typedef struct Face
 {
     /* Aresta que pertence a face */
     struct Edge *edge;
 } Face;
 
-Edge* createEdge();
-
+Edge* createEdge(Point *ponto_origem, Point *ponto_destino);
+Point* createPoint(double x, double y);
+bool left(Point *A, Point *B, Point *C);
+bool leftOn(Point *A, Point *B, Point *C);
+Edge* inCone_dcel(Edge *edge);
 void connect(Point *vertex_A, Point *vertex_B);
 void connectOrbit(Edge *edge_1, Edge *edge_2);
 void disconnect(Point *vertex_A, Point *vertex_B);
 void disconnectOrbit(Edge *edge_1, Edge *edge_2);
-bool left(Point *A, Point *B, Point *C);
-
-
-/* TODO: Implement */
-void insertEdge(Edge *edge, Point *origin, Point *destiny);
-void printFaces(Face *face);
-void printEdges(Edge *edge);
-void printPoints(Edge *edge);
-void vertexOrbit(Point *vertex);
-void insertEdge(Point *vertex_A, Point *vertex_B);
-void insertVertex(Edge *edge);
+void printEdge(Edge *edge);
+void freeEdge(Edge *edge);

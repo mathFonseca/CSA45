@@ -29,8 +29,8 @@ appPoints: $(LIB)/libcg.a appPoints.cpp
 appImage: $(LIB)/libcg.a appImage.cpp
 	$(CC) $(PFLAGS) appImage.cpp -o $(BIN)/appImage -I$(INC) -L$(LIB) -lcg 
 
-lista1: $(LIB)/libcg.a lista1.cpp
-	$(CC) $(PFLAGS) lista1.cpp geo.cpp -o $(BIN)/lista1 -I$(INC) -L$(LIB) -lcg $(GLLIBS)
+dcel_teste: $(LIB)/libcg.a dcel_testes.cpp
+	$(CC) $(PFLAGS) dcel_testes.cpp dcel.cpp -o $(BIN)/dcel_teste -I$(INC) -L$(LIB) -lcg $(GLLIBS)
 
 
 .PHONY: clean
@@ -38,4 +38,4 @@ lista1: $(LIB)/libcg.a lista1.cpp
 clean:
 	cd ../; make clean; cd applications
 	rm -f appWindow appTriangles appColoredTriangle \
-	      appImage appPoints
+	      appImage appPoints dcel
